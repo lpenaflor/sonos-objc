@@ -35,9 +35,8 @@ typedef void (^findDevicesBlock)(NSArray *ipAddresses);
                     NSHTTPURLResponse *hResponse = (NSHTTPURLResponse*)response;
                     if (hResponse.statusCode == 200){
                         NSDictionary *responseDictionary = [XMLReader dictionaryForXMLData:data error:&error];
-                        NSArray *inputDictionaryArray = responseDictionary[@"ZPSupportInfo"][@"ZonePlayers"][@"ZonePlayer"];
+                        NSDictionary *dictionary = responseDictionary[@"ZPSupportInfo"][@"ZonePlayers"][@"ZonePlayer"];
                         
-                        for (NSDictionary *dictionary in inputDictionaryArray){
                             NSString *name = dictionary[@"text"];
                             NSString *coordinator = dictionary[@"coordinator"];
                             NSString *uuid = dictionary[@"uuid"];
@@ -48,7 +47,6 @@ typedef void (^findDevicesBlock)(NSArray *ipAddresses);
                             
                             [devices addObject:@{@"ip": [location objectAtIndex:0], @"port" : [location objectAtIndex:1], @"name": name, @"coordinator": [NSNumber numberWithBool:[coordinator isEqualToString:@"true"] ? YES : NO], @"uuid": uuid, @"group": group, @"controller": controllerObject}];
                             
-                        }
                         NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
                         [devices sortUsingDescriptors:[NSArray arrayWithObjects:sort, nil]];
                         completion(devices, error);
